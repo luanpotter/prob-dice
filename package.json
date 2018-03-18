@@ -1,0 +1,12 @@
+{
+  "name": "prob-dice",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Luan Nico",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "cartesian-product": "^2.1.2",
+    "inquirer": "^5.1.0"
+  }
+}
