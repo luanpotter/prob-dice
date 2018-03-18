@@ -40,6 +40,10 @@ var questions = [
       {
         name: "Um número ou mais",
         value: ">"
+      },
+      {
+        name: "Um número pertencente ao inrevalo fechado [a, b]",
+        value: ":"
       }
     ]
   },
@@ -47,6 +51,21 @@ var questions = [
     type: "input",
     name: "x",
     message: "Qual o número alvo (x)?",
+    when: answers => answers.type !== ":",
+    validate
+  },
+  {
+    type: "input",
+    name: "a",
+    message: "Qual o número a do intervalo [a, b]?",
+    when: answers => answers.type === ":",
+    validate
+  },
+  {
+    type: "input",
+    name: "b",
+    message: "Qual o número b do intervalo [a, b]?",
+    when: answers => answers.type === ":",
     validate
   }
 ];
@@ -54,7 +73,8 @@ var questions = [
 const FILTERS = {
   "=": target => e => e === target,
   ">": target => e => e >= target,
-  "<": target => e => e <= target
+  "<": target => e => e <= target,
+  ":": (_, a, b) => e => e >= a && e <= b
 };
 
 const findPossibilities = (N, Z) => {
@@ -64,15 +84,17 @@ const findPossibilities = (N, Z) => {
 };
 
 inquirer.prompt(questions).then(answers => {
-    const { N, Z, type, x } = answers;
+    const { N, Z, type, x, a, b } = answers;
     const Ni = parseInt(N);
     const Zi = parseInt(Z);
     const xi = parseInt(x);
+    const ai = parseInt(a);
+    const bi = parseInt(b);
 
     const possibilities = findPossibilities(Ni, Zi);
     const sums = possibilities.map(e => e.reduce((a, b) => a + b));
 
     const total = possibilities.length;
-    const amount = sums.filter(FILTERS[type](xi)).length;
+    const amount = sums.filter(FILTERS[type](xi, a, b)).length;
     console.log(`Total de acertos: ${amount}.\nEspaço amostral: ${total}.\nProbabilidade: ${amount/total}.`);
 });
